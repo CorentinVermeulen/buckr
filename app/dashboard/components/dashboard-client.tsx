@@ -111,7 +111,7 @@ export default function DashboardClient({
         // Calculate cumulative time in months: (cumulative price - current balance) / sparing
         // If current balance covers the cumulative price, time is 0
         const remainingCost = Math.max(0, cumulativePrice - currentBalanceValue);
-        const cumulativeTimeInMonths = remainingCost / sparingValue;
+        const remainingTimeInMonths = remainingCost / sparingValue;
 
         // Check if this is the last non-obtained item
         const isLast = !item.obtained && index === lastNonObtainedIndex;
@@ -120,7 +120,8 @@ export default function DashboardClient({
             item,
             priceInMonths,
             cumulativePrice,
-            cumulativeTimeInMonths,
+            remainingCost,
+            remainingTimeInMonths,
             isLast,
             itemIndex: !item.obtained ? nonObtainedIndex : null
         };
@@ -145,13 +146,13 @@ export default function DashboardClient({
                 <div className="flex flex-col gap-2">
                     <div className="flex flex-row items-center justify-between">
                         <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
-                            Futurs Achats
+                            Buy Queue
                         </h2>
                         <CreateItemDialog createItem={createItem} isPlanned={true} />
                     </div>
 
                     <div className="grid gap-3 sm:gap-4 mt-3 sm:mt-4">
-                        {plannedItemsWithCalculations.map(({ item, priceInMonths, cumulativePrice, cumulativeTimeInMonths, isLast, itemIndex }) => (
+                        {plannedItemsWithCalculations.map(({ item, priceInMonths, cumulativePrice, remainingCost, remainingTimeInMonths , isLast, itemIndex }) => (
                             item.obtained ? (
                                 <ObtainedItemCard
                                     key={item.id} 
@@ -169,7 +170,8 @@ export default function DashboardClient({
                                     markItemAsObtained={markItemAsObtained}
                                     priceInMonths={priceInMonths}
                                     cumulativePrice={cumulativePrice}
-                                    cumulativeTimeInMonths={cumulativeTimeInMonths}
+                                    remainingCost = {remainingCost}
+                                    remainingTimeInMonths={remainingTimeInMonths}
                                     isPlanned={true}
                                     currentBalance={currentBalanceValue}
                                     sparing={sparingValue}
@@ -186,7 +188,7 @@ export default function DashboardClient({
                 <div className="flex flex-col gap-2">
                     <div className="flex flex-row items-center justify-between">
                         <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
-                            Boite à Idée
+                            Wishlist
                         </h2>
                         <CreateItemDialog createItem={createItem} isPlanned={false} />
                     </div>

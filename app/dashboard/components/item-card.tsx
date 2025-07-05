@@ -31,7 +31,8 @@ interface ItemCardProps {
   markItemAsObtained: (itemId: string, obtained: boolean) => Promise<void>;
   priceInMonths?: number;
   cumulativePrice?: number;
-  cumulativeTimeInMonths?: number;
+  remainingCost? : number;
+  remainingTimeInMonths? : number;
   isPlanned?: boolean;
   currentBalance?: number;
   sparing?: number;
@@ -49,7 +50,8 @@ export default function ItemCard({
   markItemAsObtained,
   priceInMonths,
   cumulativePrice,
-  cumulativeTimeInMonths,
+  remainingCost,
+  remainingTimeInMonths,
   isPlanned = false,
   currentBalance = 0,
   sparing = 0,
@@ -112,14 +114,14 @@ export default function ItemCard({
                 <div className="relative flex flex-col items-center">
                   <div className="flex items-center gap-2">
                     <div className="flex flex-col items-end gap-1">
-                      {cumulativeTimeInMonths !== undefined && (
+                      {remainingTimeInMonths !== undefined && (
                           <Badge variant="outline" className="text-xs whitespace-nowrap">
-                            {cumulativeTimeInMonths.toFixed(1)} mo
+                            {remainingTimeInMonths.toFixed(1)} mo
                           </Badge>
                       )}
-                      {cumulativePrice !== undefined && (
+                      {remainingCost !== undefined && (
                           <Badge variant="outline" className="text-xs whitespace-nowrap">
-                            ${cumulativePrice.toFixed(2)}
+                            ${remainingCost.toFixed(2)}
                           </Badge>
                       )}
                     </div>
@@ -177,9 +179,9 @@ export default function ItemCard({
                   {/* Mobile-only timeline info */}
                   {isPlanned && (
                     <div className="flex sm:hidden flex-wrap gap-1 mt-1">
-                      {cumulativeTimeInMonths !== undefined && (
+                      {remainingTimeInMonths !== undefined && (
                         <Badge variant="outline" className="text-xs">
-                          {cumulativeTimeInMonths.toFixed(1)} mo
+                          ~ {remainingTimeInMonths.toFixed(1)} mo
                         </Badge>
                       )}
                       {cumulativePrice !== undefined && (
@@ -195,7 +197,7 @@ export default function ItemCard({
                       <div className="flex flex-wrap gap-1 sm:gap-2 mt-1 sm:mt-2">
                         {priceInMonths !== undefined && (
                             <Badge variant="outline" className="text-xs">
-                              {priceInMonths.toFixed(1)} months
+                              ~ {priceInMonths.toFixed(1)} months
                             </Badge>
                         )}
                       </div>

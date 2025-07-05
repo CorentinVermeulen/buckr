@@ -155,7 +155,7 @@ export default function DashboardSidebar({
                                 updateSparing(userId, value[0]);
                             }}
                         />
-                        <Button onClick={handleSpareNow} className="w-full">Spare Now</Button>
+                        <Button onClick={handleSpareNow} className="w-full">Apply Monthly Budget</Button>
                         {daysSinceLastIncrement !== null && (
                             <div className="mt-2 text-sm text-muted-foreground text-center">
                                 Last increment: {daysSinceLastIncrement} {daysSinceLastIncrement === 1 ? 'day' : 'days'} ago
