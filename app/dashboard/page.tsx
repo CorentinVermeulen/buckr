@@ -82,6 +82,58 @@ async function deleteItem(itemId: string) {
     revalidatePath('/dashboard')
 }
 
+async function markItemAsObtained(itemId: string, obtained: boolean) {
+    'use server'
+    // Get the item to know its price and userId
+    const item = await prisma.item.findUnique({
+        where: {
+            id: itemId
+        }
+    });
+
+    if (!item) {
+        throw new Error("Item not found");
+    }
+
+    // Update the item's obtained status
+    await prisma.item.update({
+        where: {
+            id: itemId
+        },
+        data: {
+            obtained: obtained
+        }
+    });
+
+    // Get the budget to know the current balance
+    const budget = await prisma.budget.findUnique({
+        where: {
+            userId: item.userId
+        }
+    });
+
+    if (budget) {
+        // Calculate the new balance
+        // If the item is being marked as obtained, subtract its price
+        // If the item is being marked as not obtained, add its price back
+        const newBalance = obtained 
+            ? Math.max(0, budget.currentBalance - item.price) 
+            : budget.currentBalance + item.price;
+
+        // Update the budget's current balance
+        await prisma.budget.update({
+            where: {
+                userId: item.userId
+            },
+            data: {
+                currentBalance: newBalance
+            }
+        });
+    }
+
+    revalidatePath('/dashboard');
+}
+
 async function updateCurrentBalance(userId: string, newBalance: number) {
     'use server'
     await prisma.budget.upsert({
@@ -161,9 +213,14 @@ export default async function DashboardPage() {
                     not: null
                 }
             },
-            orderBy: {
-                order: 'asc'
-            }
+            orderBy: [
+                {
+                    obtained: 'asc'
+                },
+                {
+                    order: 'asc'
+                }
+            ]
         }),
         prisma.item.findMany({
             where: {
@@ -183,5 +240,6 @@ export default async function DashboardPage() {
         updateCurrentBalance={updateCurrentBalance}
         spareNow={spareNow}
         updateSparing={updateSparing}
+        markItemAsObtained={markItemAsObtained}
     />
 }

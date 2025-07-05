@@ -21,6 +21,9 @@ interface DashboardSidebarProps {
     updateCurrentBalance: (userId: string, newBalance: number) => Promise<void>;
     spareNow: (userId: string, sparingAmount: number) => Promise<void>;
     updateSparing: (userId: string, sparingAmount: number) => Promise<void>;
+    alreadySpentAmount: number;
+    missingAmount: number;
+    timeToFinish: number;
 }
 
 export default function DashboardSidebar({
@@ -28,7 +31,10 @@ export default function DashboardSidebar({
                                              userId,
                                              updateCurrentBalance,
                                              spareNow,
-                                             updateSparing
+                                             updateSparing,
+                                             alreadySpentAmount,
+                                             missingAmount,
+                                             timeToFinish
                                          }: DashboardSidebarProps) {
     const [currentBalanceDialogOpen, setCurrentBalanceDialogOpen] = useState(false);
     const [currentBalance, setCurrentBalance] = useState(budget?.currentBalance || 0);
@@ -160,7 +166,7 @@ export default function DashboardSidebar({
                             Missing
                         </div>
                         <div className="text-xl font-bold text-center">
-                            $1,760.00
+                            ${missingAmount.toFixed(2)}
                         </div>
                     </div>
 
@@ -169,7 +175,7 @@ export default function DashboardSidebar({
                             Time to finish
                         </div>
                         <div className="text-xl font-bold text-center">
-                            4.3 months
+                            {timeToFinish.toFixed(1)} months
                         </div>
                     </div>
                 </CardContent>
@@ -182,7 +188,7 @@ export default function DashboardSidebar({
                             Already Spent
                         </div>
                         <div className="text-xl font-bold text-center">
-                            $1,240.00
+                            ${alreadySpentAmount.toFixed(2)}
                         </div>
                     </div>
                 </CardContent>
