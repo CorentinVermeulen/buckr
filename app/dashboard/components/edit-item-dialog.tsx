@@ -1,29 +1,37 @@
 "use client"
 
 import { useState } from "react";
-import { useUser } from "@/context/UserContext";
 import { 
   Dialog, 
   DialogContent, 
   DialogHeader, 
   DialogTitle, 
   DialogFooter,
-  DialogTrigger
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PlusIcon } from "lucide-react";
 
-interface CreateItemDialogProps {
-  createItem: (userId: string, formData: FormData) => Promise<void>;
-  isPlanned?: boolean;
+type ItemType = {
+  id: string;
+  userId: string;
+  icon: string;
+  title: string;
+  price: number;
+  url: string | null;
+  order: number | null;
+  obtained: boolean;
 }
 
-export default function CreateItemDialog({ createItem, isPlanned = false }: CreateItemDialogProps) {
-  const [open, setOpen] = useState(false);
-  const [selectedEmoji, setSelectedEmoji] = useState("📦");
-  const user = useUser();
+interface EditItemDialogProps {
+  item: ItemType;
+  updateItem: (itemId: string, formData: FormData) => Promise<void>;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export default function EditItemDialog({ item, updateItem, open, onOpenChange }: EditItemDialogProps) {
+  const [selectedEmoji, setSelectedEmoji] = useState(item.icon || "📦");
 
   // Common emojis for items
   const commonEmojis = [
@@ -32,48 +40,39 @@ export default function CreateItemDialog({ createItem, isPlanned = false }: Crea
     "🪑", "🍕", "🕶️", "🧳", "✈️", "🏝️", "💡", "🧞‍♂️",
   ];
 
-
-  if (!user) {
-    return null;
-  }
-
   const handleSubmit = async (formData: FormData) => {
     // Add the selected emoji to the form data
     formData.append('icon', selectedEmoji);
-    // Add the isPlanned value to the form data
-    formData.append('isPlanned', isPlanned.toString());
-    await createItem(user.id, formData);
-    setOpen(false);
+    await updateItem(item.id, formData);
+    onOpenChange(false);
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="default" className="rounded-full w-10 h-10 p-0">
-          <span className="text-xl"><PlusIcon className={"stroke-4"}/></span>
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Add New Item</DialogTitle>
+          <DialogTitle>Edit Item</DialogTitle>
         </DialogHeader>
         <form action={handleSubmit} className="flex flex-col gap-4">
           <Input
             type="text"
             name="title"
             placeholder="Title"
+            defaultValue={item.title}
             required
           />
           <Input
             type="url"
             name="url"
             placeholder="URL"
+            defaultValue={item.url || ""}
           />
           <Input
             type="number"
             name="price"
             placeholder="Price"
             step="0.01"
+            defaultValue={item.price}
             required
           />
           <div className="space-y-2">
@@ -95,11 +94,11 @@ export default function CreateItemDialog({ createItem, isPlanned = false }: Crea
             </div>
           </div>
           <DialogFooter className="mt-4">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
             <Button type="submit">
-              Add Item
+              Save
             </Button>
           </DialogFooter>
         </form>
