@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Link, HandCoins } from "lucide-react";
 import EditItemDialog from "./edit-item-dialog";
 
 type ItemType = {
@@ -26,6 +28,7 @@ interface ItemCardProps {
   isPlanned?: boolean;
   currentBalance?: number;
   sparing?: number;
+  isLast?: boolean;
 }
 
 export default function ItemCard({ 
@@ -38,7 +41,8 @@ export default function ItemCard({
   cumulativeTimeInMonths, 
   isPlanned = false,
   currentBalance = 0,
-  sparing = 0
+  sparing = 0,
+  isLast = false
 }: ItemCardProps) {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
@@ -51,7 +55,7 @@ export default function ItemCard({
 
   const handleMarkAsObtained = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent the card click event from firing
-    markItemAsObtained(item.id, !item.obtained);
+    markItemAsObtained(item.id, true);
   };
 
   // Determine if the item is available (cumulative cost < total balance)
@@ -64,100 +68,116 @@ export default function ItemCard({
     cumulativePrice <= (currentBalance + sparing);
 
   return (
-    <>
-      <div 
-        className={`flex items-center border rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer relative
-          ${isAvailable && isPlanned && !item.obtained ? 'bg-green-50 border-green-200' : 'bg-white'}
-          ${item.obtained ? 'p-2' : 'p-4'}
-        `}
-        onClick={() => setEditDialogOpen(true)}
-      >
-        {/* Tag for items available next month */}
-        {isAvailableNextMonth && isPlanned && !item.obtained && (
-          <div className="absolute top-0 right-0 bg-blue-500 text-white text-xs px-2 py-1 rounded-bl-lg rounded-tr-lg">
-            Available next month
+      <>
+        <div className="flex flew-row justify-between relative mb-4">
+          <div className="w-1/5 flex flex-col items-center justify-center">
+            {isPlanned && (
+                <div className="relative flex flex-col items-center">
+                  <div className="flex items-center gap-2">
+                    <div className="flex flex-col items-end gap-1">
+                      {cumulativeTimeInMonths !== undefined && (
+                          <Badge variant="outline" className="text-xs whitespace-nowrap">
+                            {cumulativeTimeInMonths.toFixed(1)} mo
+                          </Badge>
+                      )}
+                      {cumulativePrice !== undefined && (
+                          <Badge variant="outline" className="text-xs whitespace-nowrap">
+                            ${cumulativePrice.toFixed(2)}
+                          </Badge>
+                      )}
+                    </div>
+
+                    <div className="relative">
+                      {!isLast && (
+                        <div className="absolute w-0.5 h-16 bg-gray-200 top-12 left-1/2 transform -translate-x-1/2"/>
+                      )}
+                      <div className="rounded-full bg-gray-100 w-12 h-12 flex items-center justify-center">
+                        <span className="font-medium">{priceInMonths?.toFixed(1)}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            )}
           </div>
-        )}
-        {/* Icon on the left */}
-        <div className={`${item.obtained ? 'text-2xl' : 'text-3xl'} mr-4 min-w-12 flex items-center justify-center`}>
-          {item.icon || "📦"}
-        </div>
-
-        {/* Content in the middle */}
-        <div className="flex-1">
-          <div className="flex items-center justify-between">
-            {/* Title */}
-            <h3 className={`${item.obtained ? 'text-base' : 'text-lg'} font-medium`}>{item.title}</h3>
-
-            <div className="flex items-center gap-2">
-              {/* Check button to mark as obtained - only shown if item is already obtained or if it's available */}
-              {(item.obtained || isAvailable) && (
-                <Button
-                  variant={item.obtained ? "default" : "outline"}
-                  size="sm"
-                  className={`rounded-full ${item.obtained ? 'bg-green-500 hover:bg-green-600' : ''}`}
-                  onClick={handleMarkAsObtained}
-                >
-                  {item.obtained ? '✓' : '☐'}
-                </Button>
-              )}
-
-              {/* Price on the right */}
-              <div className="font-semibold text-green-600">
-                ${item.price.toFixed(2)}
+          <div
+              className={`w-4/5 flex border rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer p-4
+              ${isAvailable ? 'border-green-500' : 'border-gray-200'}
+              ${!isAvailable ? 'bg-white' : ''}`}
+              onClick={() => setEditDialogOpen(true)}
+          >
+            {/* Left part: Icon centered */}
+            <div className="flex items-center justify-center w-auto px-3">
+              <div className="text-3xl">
+                {item.icon || "📦"}
               </div>
             </div>
+
+            {/* Center part: Title, URL button, and badges */}
+            <div className="flex-1 flex flex-col justify-center">
+              <div className="flex items-center gap-2">
+                {/* Title */}
+                <h3 className="text-lg font-medium">{item.title}</h3>
+
+                {/* URL button */}
+                {item.url && (
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleOpenUrl}
+                        className="p-1 h-auto"
+                    >
+                      <Link className="h-4 w-4"/>
+                    </Button>
+                )}
+              </div>
+
+              {/* Price calculations as badges - only shown for planned items */}
+              {isPlanned && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {priceInMonths !== undefined && (
+                        <Badge variant="outline" className="text-xs">
+                          {priceInMonths.toFixed(1)} months
+                        </Badge>
+                    )}
+                  </div>
+              )}
+            </div>
+
+            {/* Right part: Next month badge, price, and checkbox */}
+            <div className="flex flex-col items-end justify-center gap-2 min-w-[100px]">
+              {/* Price */}
+              <div className={`font-semibold ${isAvailable ? 'text-green-600' : ''}`}>
+                ${item.price.toFixed(2)}
+              </div>
+
+              {isAvailableNextMonth && isPlanned && (
+                  <Badge className="bg-purple-600 text-white font-semibold text-xs">
+                    Next month
+                  </Badge>
+              )}
+
+              {/* Check button to mark as obtained - only shown if it's available */}
+              {isAvailable && (
+                  <Button
+                      variant="outline"
+                      size="sm"
+                      className="rounded-full"
+                      onClick={handleMarkAsObtained}
+                  >
+                    <HandCoins/>
+                  </Button>
+              )}
+            </div>
           </div>
-
-          {/* URL button - only shown for non-obtained items */}
-          {item.url && !item.obtained && (
-            <div className="mt-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={handleOpenUrl}
-                className="text-sm"
-              >
-                Open Link
-              </Button>
-            </div>
-          )}
-
-          {/* Price calculations - only shown for planned items that are not obtained */}
-          {isPlanned && !item.obtained && (
-            <div className="mt-3 grid grid-cols-3 gap-2 text-sm text-muted-foreground">
-              {priceInMonths !== undefined && (
-                <div>
-                  <div className="font-medium">Price in months:</div>
-                  <div>{priceInMonths.toFixed(1)} months</div>
-                </div>
-              )}
-
-              {cumulativePrice !== undefined && (
-                <div>
-                  <div className="font-medium">Cumulative price:</div>
-                  <div>${cumulativePrice.toFixed(2)}</div>
-                </div>
-              )}
-
-              {cumulativeTimeInMonths !== undefined && (
-                <div>
-                  <div className="font-medium">Time to get:</div>
-                  <div>{cumulativeTimeInMonths.toFixed(1)} months</div>
-                </div>
-              )}
-            </div>
-          )}
         </div>
-      </div>
 
-      <EditItemDialog 
-        item={item}
-        updateItem={updateItem}
-        deleteItem={deleteItem}
-        open={editDialogOpen}
-        onOpenChange={setEditDialogOpen}
-      />
-    </>
+        <EditItemDialog
+            item={item}
+            updateItem={updateItem}
+            deleteItem={deleteItem}
+            open={editDialogOpen}
+            onOpenChange={setEditDialogOpen}
+        />
+      </>
   );
 }

@@ -3,6 +3,7 @@
 import { useUser } from "@/context/UserContext";
 import CreateItemDialog from "./create-item-dialog";
 import ItemCard from "./item-card";
+import ObtainedItemCard from "./obtained-item-card";
 import DashboardSidebar from "./dashboard-sidebar";
 
 type ItemType = {
@@ -75,6 +76,9 @@ export default function DashboardClient({
     // Calculate the time to finish (missing amount / sparing)
     const timeToFinish = sparingValue > 0 ? missingAmount / sparingValue : 0;
 
+    // Find the index of the last non-obtained item
+    const lastNonObtainedIndex = plannedItems.map(item => !item.obtained).lastIndexOf(true);
+
     // Calculate price in months, cumulative price, and cumulative time for each planned item
     const plannedItemsWithCalculations = plannedItems.map((item, index, array) => {
         // Price equivalence in months: price / sparing
@@ -93,11 +97,15 @@ export default function DashboardClient({
         const remainingCost = Math.max(0, cumulativePrice - currentBalanceValue);
         const cumulativeTimeInMonths = remainingCost / sparingValue;
 
+        // Check if this is the last non-obtained item
+        const isLast = !item.obtained && index === lastNonObtainedIndex;
+
         return {
             item,
             priceInMonths,
             cumulativePrice,
-            cumulativeTimeInMonths
+            cumulativeTimeInMonths,
+            isLast
         };
     });
 
@@ -126,20 +134,31 @@ export default function DashboardClient({
                     </div>
 
                     <div className="grid gap-4 mt-4">
-                        {plannedItemsWithCalculations.map(({ item, priceInMonths, cumulativePrice, cumulativeTimeInMonths }) => (
-                            <ItemCard 
-                                key={item.id} 
-                                item={item} 
-                                updateItem={updateItem} 
-                                deleteItem={deleteItem}
-                                markItemAsObtained={markItemAsObtained}
-                                priceInMonths={priceInMonths}
-                                cumulativePrice={cumulativePrice}
-                                cumulativeTimeInMonths={cumulativeTimeInMonths}
-                                isPlanned={true}
-                                currentBalance={currentBalanceValue}
-                                sparing={sparingValue}
-                            />
+                        {plannedItemsWithCalculations.map(({ item, priceInMonths, cumulativePrice, cumulativeTimeInMonths, isLast }) => (
+                            item.obtained ? (
+                                <ObtainedItemCard
+                                    key={item.id} 
+                                    item={item} 
+                                    updateItem={updateItem} 
+                                    deleteItem={deleteItem}
+                                    markItemAsObtained={markItemAsObtained}
+                                />
+                            ) : (
+                                <ItemCard 
+                                    key={item.id} 
+                                    item={item} 
+                                    updateItem={updateItem} 
+                                    deleteItem={deleteItem}
+                                    markItemAsObtained={markItemAsObtained}
+                                    priceInMonths={priceInMonths}
+                                    cumulativePrice={cumulativePrice}
+                                    cumulativeTimeInMonths={cumulativeTimeInMonths}
+                                    isPlanned={true}
+                                    currentBalance={currentBalanceValue}
+                                    sparing={sparingValue}
+                                    isLast={isLast}
+                                />
+                            )
                         ))}
                     </div>
                 </div>
@@ -153,13 +172,23 @@ export default function DashboardClient({
 
                     <div className="grid gap-4 mt-4">
                         {backlogItems.map(item => (
-                            <ItemCard 
-                                key={item.id} 
-                                item={item} 
-                                updateItem={updateItem} 
-                                deleteItem={deleteItem} 
-                                markItemAsObtained={markItemAsObtained}
-                            />
+                            item.obtained ? (
+                                <ObtainedItemCard 
+                                    key={item.id} 
+                                    item={item} 
+                                    updateItem={updateItem} 
+                                    deleteItem={deleteItem} 
+                                    markItemAsObtained={markItemAsObtained}
+                                />
+                            ) : (
+                                <ItemCard 
+                                    key={item.id} 
+                                    item={item} 
+                                    updateItem={updateItem} 
+                                    deleteItem={deleteItem} 
+                                    markItemAsObtained={markItemAsObtained}
+                                />
+                            )
                         ))}
                     </div>
                 </div>
