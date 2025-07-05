@@ -24,14 +24,13 @@ export default async function DashboardLayout({
          <UserProvider user={user}>
             <div className="flex min-h-screen w-full">
                <div className="w-full flex flex-1 flex-col">
-                  <div className="flex items-center justify-between h-16 px-6 border-b bg-background">
+                  <div className="flex items-center justify-between h-16 px-3 sm:px-6 border-b bg-background">
                      <Logo />
                      <ProfileHandler user={user}/>
                   </div>
-                  <main className="flex-1 p-6">{children}</main>
+                  <main className="flex-1 p-3 sm:p-6">{children}</main>
                </div>
             </div>
          </UserProvider>
    )
 }
-

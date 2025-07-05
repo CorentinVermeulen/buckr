@@ -111,8 +111,8 @@ export default function DashboardClient({
     });
 
     return (
-        <div className="flex w-full">
-            {/* Sidebar on the left */}
+        <div className="flex flex-col md:flex-row w-full">
+            {/* Sidebar - full width on mobile, left side on desktop */}
             <DashboardSidebar 
                 budget={budget}
                 userId={user.id}
@@ -124,17 +124,17 @@ export default function DashboardClient({
                 timeToFinish={timeToFinish}
             />
 
-            {/* Main content on the right */}
-            <div className="flex-1 flex flex-col gap-6 p-6">
+            {/* Main content - below sidebar on mobile, right side on desktop */}
+            <div className="flex-1 flex flex-col gap-4 sm:gap-6 p-3 sm:p-6">
                 <div className="flex flex-col gap-2">
                     <div className="flex flex-row items-center justify-between">
-                        <h2 className="text-3xl font-bold tracking-tight">
+                        <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
                             Futurs Achats
                         </h2>
                         <CreateItemDialog createItem={createItem} isPlanned={true} />
                     </div>
 
-                    <div className="grid gap-4 mt-4">
+                    <div className="grid gap-3 sm:gap-4 mt-3 sm:mt-4">
                         {plannedItemsWithCalculations.map(({ item, priceInMonths, cumulativePrice, cumulativeTimeInMonths, isLast }) => (
                             item.obtained ? (
                                 <ObtainedItemCard
@@ -165,13 +165,13 @@ export default function DashboardClient({
                 </div>
                 <div className="flex flex-col gap-2">
                     <div className="flex flex-row items-center justify-between">
-                        <h2 className="text-3xl font-bold tracking-tight">
+                        <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
                             Boite à Idée
                         </h2>
                         <CreateItemDialog createItem={createItem} isPlanned={false} />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 mt-4 w-full">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mt-3 sm:mt-4 w-full">
                         {backlogItems.map(item => (
                             item.obtained ? (
                                 <ObtainedItemCard 

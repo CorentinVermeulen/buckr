@@ -40,28 +40,28 @@ export default function ObtainedItemCard({
     <>
       <div className="mb-1">
         <div
-          className="w-full flex items-center border rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer bg-muted py-1 px-3"
+          className="w-full flex items-center border rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer bg-muted py-1 px-2 sm:px-3"
           onClick={() => setEditDialogOpen(true)}
         >
           {/* Left part: Icon centered */}
-          <div className="flex items-center justify-center w-auto px-2">
-            <div className="text-xl">
+          <div className="flex items-center justify-center w-auto px-1 sm:px-2">
+            <div className="text-base sm:text-xl">
               {item.icon || "📦"}
             </div>
           </div>
 
           {/* Center part: Title */}
           <div className="flex-1 flex flex-row items-center">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               {/* Title */}
-              <h3 className="text-sm font-medium">{item.title}</h3>
+              <h3 className="text-xs sm:text-sm font-medium truncate">{item.title}</h3>
             </div>
           </div>
 
           {/* Right part: Price and checkbox */}
-          <div className="flex flex-row items-center justify-center gap-2 min-w-[100px]">
+          <div className="flex flex-row items-center justify-center gap-1 sm:gap-2 min-w-[70px] sm:min-w-[100px]">
             {/* Price */}
-            <div className="font-semibold text-sm mr-2">
+            <div className="font-semibold text-xs sm:text-sm mr-1 sm:mr-2">
               ${item.price.toFixed(2)}
             </div>
 
@@ -69,10 +69,10 @@ export default function ObtainedItemCard({
             <Button
               variant="default"
               size="sm"
-              className="rounded-full bg-green-500 hover:bg-green-600 h-6 w-6 p-0"
+              className="rounded-full bg-green-500 hover:bg-green-600 h-5 w-5 sm:h-6 sm:w-6 p-0"
               onClick={handleMarkAsObtained}
             >
-              <Check className="h-3 w-3"/>
+              <Check className="h-2 w-2 sm:h-3 sm:w-3"/>
             </Button>
           </div>
         </div>
