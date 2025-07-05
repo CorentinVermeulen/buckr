@@ -2,6 +2,14 @@ import prisma from "@/lib/prisma";
 import {revalidatePath} from "next/cache";
 import DashboardClient from "./components/dashboard-client";
 
+type BudgetType = {
+    id: string;
+    userId: string;
+    sparing: number;
+    currentBalance: number;
+    lastIncrement: Date;
+};
+
 type ItemType = {
     id: string;
     userId: string;
@@ -74,8 +82,79 @@ async function deleteItem(itemId: string) {
     revalidatePath('/dashboard')
 }
 
+async function updateCurrentBalance(userId: string, newBalance: number) {
+    'use server'
+    await prisma.budget.upsert({
+        where: {
+            userId: userId
+        },
+        update: {
+            currentBalance: newBalance,
+            lastIncrement: new Date()
+        },
+        create: {
+            userId: userId,
+            currentBalance: newBalance,
+            sparing: 10,
+            lastIncrement: new Date()
+        }
+    })
+    revalidatePath('/dashboard')
+}
+
+async function spareNow(userId: string, sparingAmount: number) {
+    'use server'
+    const budget = await prisma.budget.findUnique({
+        where: {
+            userId: userId
+        }
+    })
+
+    if (budget) {
+        await prisma.budget.update({
+            where: {
+                userId: userId
+            },
+            data: {
+                currentBalance: budget.currentBalance + sparingAmount,
+                lastIncrement: new Date()
+            }
+        })
+    } else {
+        await prisma.budget.create({
+            data: {
+                userId: userId,
+                currentBalance: sparingAmount,
+                sparing: sparingAmount,
+                lastIncrement: new Date()
+            }
+        })
+    }
+
+    revalidatePath('/dashboard')
+}
+
+async function updateSparing(userId: string, sparingAmount: number) {
+    'use server'
+    await prisma.budget.upsert({
+        where: {
+            userId: userId
+        },
+        update: {
+            sparing: sparingAmount
+        },
+        create: {
+            userId: userId,
+            currentBalance: 0,
+            sparing: sparingAmount,
+            lastIncrement: new Date()
+        }
+    })
+    revalidatePath('/dashboard')
+}
+
 export default async function DashboardPage() {
-    const [plannedItems, backlogItems]: [ItemType[], ItemType[]] = await Promise.all([
+    const [plannedItems, backlogItems, budget] = await Promise.all([
         prisma.item.findMany({
             where: {
                 order: {
@@ -90,9 +169,19 @@ export default async function DashboardPage() {
             where: {
                 order: null
             }
-        })
+        }),
+        prisma.budget.findFirst() // Assuming there's only one budget for now
     ]);
 
-    return <DashboardClient plannedItems={plannedItems} backlogItems={backlogItems} createItem={createItem}
-                            updateItem={updateItem} deleteItem={deleteItem}/>
+    return <DashboardClient 
+        plannedItems={plannedItems} 
+        backlogItems={backlogItems} 
+        budget={budget}
+        createItem={createItem}
+        updateItem={updateItem} 
+        deleteItem={deleteItem}
+        updateCurrentBalance={updateCurrentBalance}
+        spareNow={spareNow}
+        updateSparing={updateSparing}
+    />
 }

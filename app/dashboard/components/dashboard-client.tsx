@@ -16,15 +16,37 @@ type ItemType = {
     obtained: boolean;
 }
 
+type BudgetType = {
+    id: string;
+    userId: string;
+    sparing: number;
+    currentBalance: number;
+    lastIncrement: Date;
+} | null;
+
 interface DashboardClientProps {
     plannedItems: ItemType[];
     backlogItems: ItemType[];
+    budget: BudgetType;
     createItem: (userId: string, formData: FormData) => Promise<void>;
     updateItem: (itemId: string, formData: FormData) => Promise<void>;
     deleteItem: (itemId: string) => Promise<void>;
+    updateCurrentBalance: (userId: string, newBalance: number) => Promise<void>;
+    spareNow: (userId: string, sparingAmount: number) => Promise<void>;
+    updateSparing: (userId: string, sparingAmount: number) => Promise<void>;
 }
 
-export default function DashboardClient({ plannedItems, backlogItems , createItem, updateItem, deleteItem }: DashboardClientProps) {
+export default function DashboardClient({ 
+    plannedItems, 
+    backlogItems, 
+    budget, 
+    createItem, 
+    updateItem, 
+    deleteItem,
+    updateCurrentBalance,
+    spareNow,
+    updateSparing
+}: DashboardClientProps) {
     const user = useUser();
 
     if (!user) {
@@ -34,7 +56,13 @@ export default function DashboardClient({ plannedItems, backlogItems , createIte
     return (
         <div className="flex w-full">
             {/* Sidebar on the left */}
-            <DashboardSidebar />
+            <DashboardSidebar 
+                budget={budget}
+                userId={user.id}
+                updateCurrentBalance={updateCurrentBalance}
+                spareNow={spareNow}
+                updateSparing={updateSparing}
+            />
 
             {/* Main content on the right */}
             <div className="flex-1 flex flex-col gap-6 p-6">
