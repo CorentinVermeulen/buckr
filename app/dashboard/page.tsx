@@ -1,4 +1,6 @@
 import prisma from "@/lib/prisma";
+import { auth } from "@/lib/auth"; // path to your Better Auth server instance
+import { headers } from "next/headers";
 import {revalidatePath} from "next/cache";
 import DashboardClient from "./components/dashboard-client";
 
@@ -324,9 +326,17 @@ async function moveToBacklog(itemId: string) {
 }
 
 export default async function DashboardPage() {
+
+    const session = await auth.api.getSession({
+        headers: await headers() // you need to pass the headers object.
+    })
+
+    const userId = session?.user.id as string;
+
     const [plannedItems, backlogItems, budget] = await Promise.all([
         prisma.item.findMany({
             where: {
+                userId: userId,
                 order: {
                     not: null
                 }
@@ -342,10 +352,15 @@ export default async function DashboardPage() {
         }),
         prisma.item.findMany({
             where: {
+                userId: userId,
                 order: null
             }
         }),
-        prisma.budget.findFirst() // Assuming there's only one budget for now
+        prisma.budget.findFirst({
+            where:{
+                userId: userId,
+            }
+        }) // Assuming there's only one budget for now
     ]);
 
     return <DashboardClient 
