@@ -102,7 +102,10 @@ export default function DashboardSidebar({
 
                 <Card 
                     className="overflow-hidden flex-shrink-0 min-w-[250px] cursor-pointer hover:shadow-md transition-shadow"
-                    onClick={() => setCurrentBalanceDialogOpen(true)}
+                    onClick={() => {
+                        setCurrentBalance(budget?.currentBalance || 0);
+                        setCurrentBalanceDialogOpen(true);
+                    }}
                 >
                     <CardContent className="px-3 py-2 space-y-3">
                         <div className="text-sm font-medium flex flex-row justify-between gap-2 items-center">
@@ -166,7 +169,10 @@ export default function DashboardSidebar({
 
                 <Card
                     className="overflow-hidden cursor-pointer hover:shadow-md transition-shadow mt-6"
-                    onClick={() => setCurrentBalanceDialogOpen(true)}
+                    onClick={() => {
+                        setCurrentBalance(budget?.currentBalance || 0);
+                        setCurrentBalanceDialogOpen(true);
+                    }}
                 >
                     <CardContent className="px-4 py-2 space-y-4">
                         <div className="text-sm font-medium flex flex-row justify-between gap-2 items-center">
@@ -221,6 +227,11 @@ export default function DashboardSidebar({
                                 type="number"
                                 value={currentBalance}
                                 onChange={handleCurrentBalanceChange}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        handleCurrentBalanceDialogClose();
+                                    }
+                                }}
                                 className="text-center text-lg sm:text-xl h-12 sm:h-16"
                             />
                             <Button
