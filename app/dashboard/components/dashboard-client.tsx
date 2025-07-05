@@ -4,6 +4,7 @@ import { useUser } from "@/context/UserContext";
 import CreateItemDialog from "./create-item-dialog";
 import ItemCard from "./item-card";
 import ObtainedItemCard from "./obtained-item-card";
+import BacklogItemCard from "./backlog-item-card";
 import DashboardSidebar from "./dashboard-sidebar";
 
 type ItemType = {
@@ -170,7 +171,7 @@ export default function DashboardClient({
                         <CreateItemDialog createItem={createItem} isPlanned={false} />
                     </div>
 
-                    <div className="grid gap-4 mt-4">
+                    <div className="grid grid-cols-2 gap-4 mt-4 w-full">
                         {backlogItems.map(item => (
                             item.obtained ? (
                                 <ObtainedItemCard 
@@ -181,7 +182,7 @@ export default function DashboardClient({
                                     markItemAsObtained={markItemAsObtained}
                                 />
                             ) : (
-                                <ItemCard 
+                                <BacklogItemCard 
                                     key={item.id} 
                                     item={item} 
                                     updateItem={updateItem} 
