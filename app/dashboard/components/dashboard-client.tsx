@@ -152,37 +152,51 @@ export default function DashboardClient({
                     </div>
 
                     <div className="grid gap-3 sm:gap-4 mt-3 sm:mt-4">
-                        {plannedItemsWithCalculations.map(({ item, priceInMonths, cumulativePrice, remainingCost, remainingTimeInMonths , isLast, itemIndex }) => (
-                            item.obtained ? (
-                                <ObtainedItemCard
-                                    key={item.id} 
-                                    item={item} 
-                                    updateItem={updateItem} 
-                                    deleteItem={deleteItem}
-                                    markItemAsObtained={markItemAsObtained}
-                                />
-                            ) : (
-                                <ItemCard 
-                                    key={item.id} 
-                                    item={item} 
-                                    updateItem={updateItem} 
-                                    deleteItem={deleteItem}
-                                    markItemAsObtained={markItemAsObtained}
-                                    priceInMonths={priceInMonths}
-                                    cumulativePrice={cumulativePrice}
-                                    remainingCost = {remainingCost}
-                                    remainingTimeInMonths={remainingTimeInMonths}
-                                    isPlanned={true}
-                                    currentBalance={currentBalanceValue}
-                                    sparing={sparingValue}
-                                    isLast={isLast}
-                                    moveItemUp={moveItemUp}
-                                    moveItemDown={moveItemDown}
-                                    moveToBacklog={moveToBacklog}
-                                    itemIndex={itemIndex}
-                                />
-                            )
-                        ))}
+                        {plannedItemsWithCalculations.length > 0 ? (
+                            plannedItemsWithCalculations.map(({ item, priceInMonths, cumulativePrice, remainingCost, remainingTimeInMonths , isLast, itemIndex }) => (
+                                item.obtained ? (
+                                    <ObtainedItemCard
+                                        key={item.id} 
+                                        item={item} 
+                                        updateItem={updateItem} 
+                                        deleteItem={deleteItem}
+                                        markItemAsObtained={markItemAsObtained}
+                                    />
+                                ) : (
+                                    <ItemCard 
+                                        key={item.id} 
+                                        item={item} 
+                                        updateItem={updateItem} 
+                                        deleteItem={deleteItem}
+                                        markItemAsObtained={markItemAsObtained}
+                                        priceInMonths={priceInMonths}
+                                        cumulativePrice={cumulativePrice}
+                                        remainingCost = {remainingCost}
+                                        remainingTimeInMonths={remainingTimeInMonths}
+                                        isPlanned={true}
+                                        currentBalance={currentBalanceValue}
+                                        sparing={sparingValue}
+                                        isLast={isLast}
+                                        moveItemUp={moveItemUp}
+                                        moveItemDown={moveItemDown}
+                                        moveToBacklog={moveToBacklog}
+                                        itemIndex={itemIndex}
+                                    />
+                                )
+                            ))
+                        ) : (
+                            <div className="border border-dashed rounded-lg p-4 text-muted-foreground flex flex-col items-center">
+                                <p className="mb-2 text-center">
+                                    The <strong>Buy Queue</strong> allows you to plan your purchases based on your monthly saving budget.
+                                </p>
+                                <p className="mb-2 text-center">
+                                    Items are displayed with time estimates showing when you&#39;ll be able to buy them.
+                                </p>
+                                <p className="mt-2 mb-2 text-center">
+                                    The order of items impacts these estimates - you can reorder them by <strong>right-clicking</strong> and selecting <strong>&ldquo;Move Up&rdquo;</strong>  or <strong>&ldquo;Move Down&rdquo;</strong>.
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -194,26 +208,37 @@ export default function DashboardClient({
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mt-3 sm:mt-4 w-full">
-                        {backlogItems.map(item => (
-                            item.obtained ? (
-                                <ObtainedItemCard 
-                                    key={item.id} 
-                                    item={item} 
-                                    updateItem={updateItem} 
-                                    deleteItem={deleteItem} 
-                                    markItemAsObtained={markItemAsObtained}
-                                />
-                            ) : (
-                                <BacklogItemCard 
-                                    key={item.id} 
-                                    item={item} 
-                                    updateItem={updateItem} 
-                                    deleteItem={deleteItem} 
-                                    markItemAsObtained={markItemAsObtained}
-                                    moveToPlanned={moveToPlanned}
-                                />
-                            )
-                        ))}
+                        {backlogItems.length > 0 ? (
+                            backlogItems.map(item => (
+                                item.obtained ? (
+                                    <ObtainedItemCard 
+                                        key={item.id} 
+                                        item={item} 
+                                        updateItem={updateItem} 
+                                        deleteItem={deleteItem} 
+                                        markItemAsObtained={markItemAsObtained}
+                                    />
+                                ) : (
+                                    <BacklogItemCard 
+                                        key={item.id} 
+                                        item={item} 
+                                        updateItem={updateItem} 
+                                        deleteItem={deleteItem} 
+                                        markItemAsObtained={markItemAsObtained}
+                                        moveToPlanned={moveToPlanned}
+                                    />
+                                )
+                            ))
+                        ) : (
+                            <div className="border border-dashed rounded-lg p-4 text-muted-foreground flex flex-col items-center col-span-1 sm:col-span-2">
+                                <p className="mb-2 text-center">
+                                    The <strong>Wishlist</strong> lets you keep track of items that you don&#39;t know when to buy yet.
+                                </p>
+                                <p className="mb-2 text-center">
+                                    When you&#39;re ready to plan a purchase, you can move items to the Buy Queue by <strong>right-clicking</strong> and selecting <strong>&ldquo;Move to Planned&rdquo;</strong>.
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
