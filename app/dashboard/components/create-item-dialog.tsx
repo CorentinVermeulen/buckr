@@ -21,22 +21,15 @@ interface CreateItemDialogProps {
 export default function CreateItemDialog({ createItem }: CreateItemDialogProps) {
   const [open, setOpen] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState("📦");
-  const [showAllEmojis, setShowAllEmojis] = useState(false);
   const user = useUser();
 
   // Common emojis for items
-  const commonEmojis = ["📦", "💻", "📱", "🎮", "👕", "👟", "🎧", "📚", "🏠", "🚗", "⌚", "💍", "🎁", "🛒", "💰"];
-
-  // More emojis for the expanded view
-  const allEmojis = [
-    ...commonEmojis,
-    "🖥️", "⌨️", "🖱️", "🖨️", "📷", "🎥", "📺", "📻", "🔋", "💾", "💿", "📀", "🎞️", 
-    "🎹", "🎸", "🎺", "🎻", "🥁", "🎯", "🎲", "🎭", "🎨", "🧩", "🎪", "🎟️", "🎫",
-    "👔", "👗", "👘", "👙", "👚", "👛", "👜", "👝", "🧣", "🧤", "🧥", "🧦",
-    "👒", "🎩", "🧢", "⛑️", "👑", "👓", "🕶️", "🥽", "🥼", "🦺", "👠", "👡", "👢",
-    "🔨", "🪓", "⛏️", "⚒️", "🛠️", "🗡️", "⚔️", "🔫", "🏹", "🛡️", "🪚", "🔧", "🔩",
-    "⚙️", "🗜️", "⚖️", "🔗", "⛓️", "🧰", "🧲", "🧪", "🧫", "🧬", "🔬", "🔭", "📡"
+  const commonEmojis = [
+    "📦", "🧢", "👕", "🧥", "👖", "🩳", "👟", "👠",
+    "🏋️‍♀️", "🚲", "🎧", "⌚", "📱", "💻", "💍", "🎁",
+    "🪑", "🍕", "🕶️", "🧳", "✈️", "🏝️", "💡", "🧞‍♂️",
   ];
+
 
   if (!user) {
     return null;
@@ -83,7 +76,7 @@ export default function CreateItemDialog({ createItem }: CreateItemDialogProps) 
             <Label htmlFor="icon">Icon</Label>
             <div className="flex flex-col gap-2">
               <div className="grid grid-cols-8 gap-2">
-                {(showAllEmojis ? allEmojis : commonEmojis).map((emoji, index) => (
+                {(commonEmojis).map((emoji, index) => (
                   <Button
                     key={index}
                     type="button"
@@ -95,15 +88,6 @@ export default function CreateItemDialog({ createItem }: CreateItemDialogProps) 
                   </Button>
                 ))}
               </div>
-
-              <Button 
-                type="button" 
-                variant="ghost" 
-                className="mt-2 text-sm"
-                onClick={() => setShowAllEmojis(!showAllEmojis)}
-              >
-                {showAllEmojis ? "Show fewer emojis" : "Show more emojis"}
-              </Button>
             </div>
           </div>
           <DialogFooter className="mt-4">
