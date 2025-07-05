@@ -37,6 +37,10 @@ interface DashboardClientProps {
     spareNow: (userId: string, sparingAmount: number) => Promise<void>;
     updateSparing: (userId: string, sparingAmount: number) => Promise<void>;
     markItemAsObtained: (itemId: string, obtained: boolean) => Promise<void>;
+    moveItemUp: (itemId: string) => Promise<void>;
+    moveItemDown: (itemId: string) => Promise<void>;
+    moveToPlanned: (itemId: string) => Promise<void>;
+    moveToBacklog: (itemId: string) => Promise<void>;
 }
 
 export default function DashboardClient({ 
@@ -49,7 +53,11 @@ export default function DashboardClient({
     updateCurrentBalance,
     spareNow,
     updateSparing,
-    markItemAsObtained
+    markItemAsObtained,
+    moveItemUp,
+    moveItemDown,
+    moveToPlanned,
+    moveToBacklog
 }: DashboardClientProps) {
     const user = useUser();
 
@@ -81,7 +89,14 @@ export default function DashboardClient({
     const lastNonObtainedIndex = plannedItems.map(item => !item.obtained).lastIndexOf(true);
 
     // Calculate price in months, cumulative price, and cumulative time for each planned item
+    // Also track the index of non-obtained items (1-based)
+    let nonObtainedIndex = 0;
     const plannedItemsWithCalculations = plannedItems.map((item, index, array) => {
+        // Increment the non-obtained index counter for non-obtained items
+        if (!item.obtained) {
+            nonObtainedIndex++;
+        }
+
         // Price equivalence in months: price / sparing
         const priceInMonths = item.price / sparingValue;
 
@@ -106,7 +121,8 @@ export default function DashboardClient({
             priceInMonths,
             cumulativePrice,
             cumulativeTimeInMonths,
-            isLast
+            isLast,
+            itemIndex: !item.obtained ? nonObtainedIndex : null
         };
     });
 
@@ -135,7 +151,7 @@ export default function DashboardClient({
                     </div>
 
                     <div className="grid gap-3 sm:gap-4 mt-3 sm:mt-4">
-                        {plannedItemsWithCalculations.map(({ item, priceInMonths, cumulativePrice, cumulativeTimeInMonths, isLast }) => (
+                        {plannedItemsWithCalculations.map(({ item, priceInMonths, cumulativePrice, cumulativeTimeInMonths, isLast, itemIndex }) => (
                             item.obtained ? (
                                 <ObtainedItemCard
                                     key={item.id} 
@@ -158,6 +174,10 @@ export default function DashboardClient({
                                     currentBalance={currentBalanceValue}
                                     sparing={sparingValue}
                                     isLast={isLast}
+                                    moveItemUp={moveItemUp}
+                                    moveItemDown={moveItemDown}
+                                    moveToBacklog={moveToBacklog}
+                                    itemIndex={itemIndex}
                                 />
                             )
                         ))}
@@ -188,6 +208,7 @@ export default function DashboardClient({
                                     updateItem={updateItem} 
                                     deleteItem={deleteItem} 
                                     markItemAsObtained={markItemAsObtained}
+                                    moveToPlanned={moveToPlanned}
                                 />
                             )
                         ))}

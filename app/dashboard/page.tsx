@@ -205,6 +205,143 @@ async function updateSparing(userId: string, sparingAmount: number) {
     revalidatePath('/dashboard')
 }
 
+async function moveItemUp(itemId: string) {
+    'use server'
+    // Get the current item
+    const currentItem = await prisma.item.findUnique({
+        where: { id: itemId }
+    });
+
+    if (!currentItem || currentItem.order === null) {
+        return; // Not a planned item or doesn't exist
+    }
+
+    // Find the item that comes before this one (with the next lower order value)
+    const previousItem = await prisma.item.findFirst({
+        where: {
+            order: { lt: currentItem.order },
+            obtained: false // Only consider non-obtained items for reordering
+        },
+        orderBy: {
+            order: 'desc'
+        }
+    });
+
+    if (!previousItem || previousItem.order === null) {
+        return; // Already at the top
+    }
+
+    // Swap the order values
+    await prisma.$transaction([
+        prisma.item.update({
+            where: { id: currentItem.id },
+            data: { order: previousItem.order }
+        }),
+        prisma.item.update({
+            where: { id: previousItem.id },
+            data: { order: currentItem.order }
+        })
+    ]);
+
+    revalidatePath('/dashboard');
+}
+
+async function moveItemDown(itemId: string) {
+    'use server'
+    // Get the current item
+    const currentItem = await prisma.item.findUnique({
+        where: { id: itemId }
+    });
+
+    if (!currentItem || currentItem.order === null) {
+        return; // Not a planned item or doesn't exist
+    }
+
+    // Find the item that comes after this one (with the next higher order value)
+    const nextItem = await prisma.item.findFirst({
+        where: {
+            order: { gt: currentItem.order },
+            obtained: false // Only consider non-obtained items for reordering
+        },
+        orderBy: {
+            order: 'asc'
+        }
+    });
+
+    if (!nextItem || nextItem.order === null) {
+        return; // Already at the bottom
+    }
+
+    // Swap the order values
+    await prisma.$transaction([
+        prisma.item.update({
+            where: { id: currentItem.id },
+            data: { order: nextItem.order }
+        }),
+        prisma.item.update({
+            where: { id: nextItem.id },
+            data: { order: currentItem.order }
+        })
+    ]);
+
+    revalidatePath('/dashboard');
+}
+
+async function moveToPlanned(itemId: string) {
+    'use server'
+    // Get the current item
+    const currentItem = await prisma.item.findUnique({
+        where: { id: itemId }
+    });
+
+    if (!currentItem || currentItem.order !== null) {
+        return; // Already a planned item or doesn't exist
+    }
+
+    // Find the maximum order value of planned items
+    const maxOrderItem = await prisma.item.findFirst({
+        where: {
+            order: {
+                not: null
+            }
+        },
+        orderBy: {
+            order: 'desc'
+        }
+    });
+
+    // Set the new order value to max + 1, or 1 if no planned items exist
+    const newOrder = maxOrderItem ? (maxOrderItem.order as number) + 1 : 1;
+
+    // Update the item to be planned
+    await prisma.item.update({
+        where: { id: itemId },
+        data: { order: newOrder }
+    });
+
+    revalidatePath('/dashboard');
+}
+
+async function moveToBacklog(itemId: string) {
+    'use server'
+    // Get the current item
+    const currentItem = await prisma.item.findUnique({
+        where: { id: itemId }
+    });
+
+    if (!currentItem || currentItem.order === null) {
+        return; // Already a backlog item or doesn't exist
+    }
+
+    // Update the item to be in backlog
+    await prisma.item.update({
+        where: { id: itemId },
+        data: { order: null }
+    });
+
+    revalidatePath('/dashboard');
+}
+
 export default async function DashboardPage() {
     const [plannedItems, backlogItems, budget] = await Promise.all([
         prisma.item.findMany({
@@ -241,5 +378,9 @@ export default async function DashboardPage() {
         spareNow={spareNow}
         updateSparing={updateSparing}
         markItemAsObtained={markItemAsObtained}
+        moveItemUp={moveItemUp}
+        moveItemDown={moveItemDown}
+        moveToPlanned={moveToPlanned}
+        moveToBacklog={moveToBacklog}
     />
 }
