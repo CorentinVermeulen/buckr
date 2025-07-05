@@ -2,25 +2,6 @@ import prisma from "@/lib/prisma";
 import {revalidatePath} from "next/cache";
 import DashboardClient from "./components/dashboard-client";
 
-type BudgetType = {
-    id: string;
-    userId: string;
-    sparing: number;
-    currentBalance: number;
-    lastIncrement: Date;
-};
-
-type ItemType = {
-    id: string;
-    userId: string;
-    icon: string;
-    title: string;
-    price: number;
-    url: string | null;
-    order: number | null;
-    obtained: boolean;
-}
-
 async function createItem(userId: string, formData: FormData) {
     'use server'
     const isPlanned = formData.get('isPlanned') === 'true';
