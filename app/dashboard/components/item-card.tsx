@@ -18,9 +18,10 @@ type ItemType = {
 interface ItemCardProps {
   item: ItemType;
   updateItem: (itemId: string, formData: FormData) => Promise<void>;
+  deleteItem: (itemId: string) => Promise<void>;
 }
 
-export default function ItemCard({ item, updateItem }: ItemCardProps) {
+export default function ItemCard({ item, updateItem, deleteItem }: ItemCardProps) {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   const handleOpenUrl = (e: React.MouseEvent) => {
@@ -72,6 +73,7 @@ export default function ItemCard({ item, updateItem }: ItemCardProps) {
       <EditItemDialog 
         item={item}
         updateItem={updateItem}
+        deleteItem={deleteItem}
         open={editDialogOpen}
         onOpenChange={setEditDialogOpen}
       />

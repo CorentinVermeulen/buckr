@@ -64,6 +64,16 @@ async function updateItem(itemId: string, formData: FormData) {
     revalidatePath('/dashboard')
 }
 
+async function deleteItem(itemId: string) {
+    'use server'
+    await prisma.item.delete({
+        where: {
+            id: itemId
+        }
+    })
+    revalidatePath('/dashboard')
+}
+
 export default async function DashboardPage() {
     const [plannedItems, backlogItems]: [ItemType[], ItemType[]] = await Promise.all([
         prisma.item.findMany({
@@ -84,5 +94,5 @@ export default async function DashboardPage() {
     ]);
 
     return <DashboardClient plannedItems={plannedItems} backlogItems={backlogItems} createItem={createItem}
-                            updateItem={updateItem}/>
+                            updateItem={updateItem} deleteItem={deleteItem}/>
 }

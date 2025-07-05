@@ -21,9 +21,10 @@ interface DashboardClientProps {
     backlogItems: ItemType[];
     createItem: (userId: string, formData: FormData) => Promise<void>;
     updateItem: (itemId: string, formData: FormData) => Promise<void>;
+    deleteItem: (itemId: string) => Promise<void>;
 }
 
-export default function DashboardClient({ plannedItems, backlogItems , createItem, updateItem }: DashboardClientProps) {
+export default function DashboardClient({ plannedItems, backlogItems , createItem, updateItem, deleteItem }: DashboardClientProps) {
     const user = useUser();
 
     if (!user) {
@@ -47,7 +48,7 @@ export default function DashboardClient({ plannedItems, backlogItems , createIte
 
                     <div className="grid gap-4 mt-4">
                         {plannedItems.map(item => (
-                            <ItemCard key={item.id} item={item} updateItem={updateItem} />
+                            <ItemCard key={item.id} item={item} updateItem={updateItem} deleteItem={deleteItem} />
                         ))}
                     </div>
                 </div>
@@ -61,7 +62,7 @@ export default function DashboardClient({ plannedItems, backlogItems , createIte
 
                     <div className="grid gap-4 mt-4">
                         {backlogItems.map(item => (
-                            <ItemCard key={item.id} item={item} updateItem={updateItem} />
+                            <ItemCard key={item.id} item={item} updateItem={updateItem} deleteItem={deleteItem} />
                         ))}
                     </div>
                 </div>

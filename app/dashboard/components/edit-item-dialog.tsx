@@ -26,11 +26,12 @@ type ItemType = {
 interface EditItemDialogProps {
   item: ItemType;
   updateItem: (itemId: string, formData: FormData) => Promise<void>;
+  deleteItem: (itemId: string) => Promise<void>;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export default function EditItemDialog({ item, updateItem, open, onOpenChange }: EditItemDialogProps) {
+export default function EditItemDialog({ item, updateItem, deleteItem, open, onOpenChange }: EditItemDialogProps) {
   const [selectedEmoji, setSelectedEmoji] = useState(item.icon || "📦");
 
   // Common emojis for items
@@ -44,6 +45,11 @@ export default function EditItemDialog({ item, updateItem, open, onOpenChange }:
     // Add the selected emoji to the form data
     formData.append('icon', selectedEmoji);
     await updateItem(item.id, formData);
+    onOpenChange(false);
+  };
+
+  const handleDelete = async () => {
+    await deleteItem(item.id);
     onOpenChange(false);
   };
 
@@ -93,13 +99,18 @@ export default function EditItemDialog({ item, updateItem, open, onOpenChange }:
               </div>
             </div>
           </div>
-          <DialogFooter className="mt-4">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+          <DialogFooter className="mt-4 flex justify-between w-full">
+            <Button type="button" variant="destructive" onClick={handleDelete}>
+              Delete
             </Button>
-            <Button type="submit">
-              Save
-            </Button>
+            <div className="flex gap-2">
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                Cancel
+              </Button>
+              <Button type="submit">
+                Save
+              </Button>
+            </div>
           </DialogFooter>
         </form>
       </DialogContent>
