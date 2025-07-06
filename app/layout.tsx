@@ -20,7 +20,7 @@ export default function RootLayout({
       >
         <NextTopLoader showSpinner={false} height={3} color="#000000" />
         <Toaster richColors position="top-right" />
-        <main className="h-screen">
+        <main className="min-h-screen">
           {children}
         </main>
       </body>
