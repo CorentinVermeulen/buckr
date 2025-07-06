@@ -122,7 +122,7 @@ export default function ItemCard({
                       )}
                       {remainingCost !== undefined && (
                           <Badge variant="outline" className="text-xs whitespace-nowrap">
-                            ${remainingCost.toFixed(2)}
+                            €{remainingCost.toFixed(2)}
                           </Badge>
                       )}
                     </div>
@@ -187,7 +187,7 @@ export default function ItemCard({
                       )}
                       {cumulativePrice !== undefined && (
                         <Badge variant="outline" className="text-xs">
-                          ${cumulativePrice.toFixed(2)}
+                          €{cumulativePrice.toFixed(2)}
                         </Badge>
                       )}
                     </div>
@@ -209,7 +209,7 @@ export default function ItemCard({
                 <div className="flex flex-col items-end justify-center gap-1 sm:gap-2 min-w-[80px] sm:min-w-[100px]">
                   {/* Price */}
                   <div className={`font-semibold text-sm sm:text-base ${isAvailable ? 'text-green-600' : ''}`}>
-                    ${item.price.toFixed(2)}
+                    €{item.price.toFixed(2)}
                   </div>
 
                   {isAvailableNextMonth && isPlanned && (

@@ -63,7 +63,7 @@ export default function ObtainedItemCard({
           <div className="flex flex-row items-center justify-center gap-1 sm:gap-2 min-w-[70px] sm:min-w-[100px]">
             {/* Price */}
             <div className="font-semibold text-xs sm:text-sm mr-1 sm:mr-2">
-              ${item.price.toFixed(2)}
+              €{item.price.toFixed(2)}
             </div>
 
             {/* Check button to mark as not obtained */}

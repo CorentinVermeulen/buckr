@@ -84,7 +84,7 @@ export default function DashboardSidebar({
                     <CardContent className="px-3 py-2 space-y-3">
                         <div className="text-sm font-medium flex flex-row justify-between gap-2 items-center">
                             <div>Budget per month</div>
-                            <div className="text-xl font-bold text-center">${sparingValue}</div>
+                            <div className="text-xl font-bold text-center">€{sparingValue}</div>
                         </div>
                         <Slider
                             value={[sparingValue]}
@@ -111,7 +111,7 @@ export default function DashboardSidebar({
                         <div className="text-sm font-medium flex flex-row justify-between gap-2 items-center">
                             <div>Current Balance</div>
                             <div className="text-xl font-bold text-center">
-                                ${budget?.currentBalance.toFixed(2) || "0.00"}
+                                €{budget?.currentBalance.toFixed(2) || "0.00"}
                             </div>
                         </div>
                     </CardContent>
@@ -121,7 +121,7 @@ export default function DashboardSidebar({
                     <CardContent className="px-3 py-2 space-y-3">
                         <div className="text-sm font-medium flex flex-row justify-between gap-2 items-center">
                             <div>Missing</div>
-                            <div className="text-xl font-bold text-center">${missingAmount.toFixed(2)}</div>
+                            <div className="text-xl font-bold text-center">€{missingAmount.toFixed(2)}</div>
                         </div>
                         <div className="text-sm font-medium flex flex-row justify-between gap-2 items-center">
                             <div>Time to finish</div>
@@ -134,7 +134,7 @@ export default function DashboardSidebar({
                     <CardContent className="px-3 py-2 space-y-3">
                         <div className="text-sm font-medium flex flex-row justify-between gap-2 items-center">
                             <div>Already Spent</div>
-                            <div className="text-xl font-bold text-center">${alreadySpentAmount.toFixed(2)}</div>
+                            <div className="text-xl font-bold text-center">€{alreadySpentAmount.toFixed(2)}</div>
                         </div>
                     </CardContent>
                 </Card>
@@ -146,7 +146,7 @@ export default function DashboardSidebar({
                     <CardContent className="px-4 py-2 space-y-4">
                         <div className="text-sm font-medium flex flex-row justify-between gap-2 items-center">
                             <div>Budget per month</div>
-                            <div className="text-2xl font-bold text-center">${sparingValue}</div>
+                            <div className="text-2xl font-bold text-center">€{sparingValue}</div>
                         </div>
                         <Slider
                             value={[sparingValue]}
@@ -178,7 +178,7 @@ export default function DashboardSidebar({
                         <div className="text-sm font-medium flex flex-row justify-between gap-2 items-center">
                             <div>Current Balance</div>
                             <div className="text-xl font-bold text-center">
-                                ${budget?.currentBalance.toFixed(2) || "0.00"}
+                                €{budget?.currentBalance.toFixed(2) || "0.00"}
                             </div>
                         </div>
                     </CardContent>
@@ -188,7 +188,7 @@ export default function DashboardSidebar({
                     <CardContent className="px-4 py-2 space-y-4">
                         <div className="text-sm font-medium flex flex-row justify-between gap-2 items-center">
                             <div>Missing</div>
-                            <div className="text-xl font-bold text-center">${missingAmount.toFixed(2)}</div>
+                            <div className="text-xl font-bold text-center">€{missingAmount.toFixed(2)}</div>
                         </div>
                         <div className="text-sm font-medium flex flex-row justify-between gap-2 items-center">
                             <div>Time to finish</div>
@@ -201,7 +201,7 @@ export default function DashboardSidebar({
                     <CardContent className="px-4 py-2 space-y-4">
                         <div className="text-sm font-medium flex flex-row justify-between gap-2 items-center">
                             <div>Already Spent</div>
-                            <div className="text-xl font-bold text-center">${alreadySpentAmount.toFixed(2)}</div>
+                            <div className="text-xl font-bold text-center">€{alreadySpentAmount.toFixed(2)}</div>
                         </div>
                     </CardContent>
                 </Card>
@@ -214,7 +214,7 @@ export default function DashboardSidebar({
                     </DialogHeader>
                     <div className="flex flex-col items-center gap-4 sm:gap-6 py-4">
                         <div className="text-3xl sm:text-4xl font-bold">
-                            ${currentBalance.toFixed(2)}
+                            €{currentBalance.toFixed(2)}
                         </div>
                         <div className="flex items-center gap-2 sm:gap-4">
                             <Button
