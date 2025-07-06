@@ -99,14 +99,27 @@ export default function EditItemDialog({ item, updateItem, deleteItem, open, onO
               </div>
             </div>
           </div>
-          <DialogFooter className="mt-4 flex justify-between w-full">
-            <Button type="button" variant="destructive" onClick={handleDelete}>
-              Delete
-            </Button>
-            <div className="flex gap-2">
+          <DialogFooter className="mt-4 flex flex-col sm:flex-row w-full gap-2">
+            {/* Mobile view: Delete and Cancel on same line */}
+            <div className="flex justify-between sm:hidden w-full gap-2">
+              <Button type="button" variant="destructive" onClick={handleDelete}>
+                Delete
+              </Button>
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Cancel
               </Button>
+            </div>
+
+            {/* Mobile view: Save button full width */}
+            <Button type="submit" className="w-full sm:hidden">
+              Save
+            </Button>
+
+            {/* Desktop view: Small Delete on left, Save on right */}
+            <Button type="button" variant="destructive" onClick={handleDelete} className="hidden sm:flex sm:text-sm">
+              Delete
+            </Button>
+            <div className="hidden sm:flex sm:ml-auto">
               <Button type="submit">
                 Save
               </Button>
