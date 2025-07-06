@@ -18,7 +18,7 @@ export default function RootLayout({
       <body
         className={` antialiased`}
       >
-        <NextTopLoader showSpinner={false} height={6} color="#000000" />
+        <NextTopLoader showSpinner={false} height={3} color="#000000" />
         <Toaster richColors position="top-right" />
         <main className="h-screen">
           {children}
