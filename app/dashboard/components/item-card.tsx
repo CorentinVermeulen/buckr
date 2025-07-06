@@ -18,6 +18,7 @@ type ItemType = {
   userId: string;
   icon: string;
   title: string;
+  description: string | null;
   price: number;
   url: string | null;
   order: number | null;

@@ -11,12 +11,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 type ItemType = {
   id: string;
   userId: string;
   icon: string;
   title: string;
+  description: string | null;
   price: number;
   url: string | null;
   order: number | null;
@@ -73,6 +75,14 @@ export default function EditItemDialog({ item, updateItem, deleteItem, open, onO
             placeholder="URL"
             defaultValue={item.url || ""}
           />
+          <div className="space-y-2">
+            <Textarea
+              name="description"
+              placeholder="Description"
+              defaultValue={item.description || ""}
+              className="resize-y"
+            />
+          </div>
           <Input
             type="number"
             name="price"

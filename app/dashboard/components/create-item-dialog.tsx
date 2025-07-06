@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { PlusIcon } from "lucide-react";
 
 interface CreateItemDialogProps {
@@ -69,6 +70,13 @@ export default function CreateItemDialog({ createItem, isPlanned = false }: Crea
             name="url"
             placeholder="URL"
           />
+          <div className="space-y-2">
+            <Textarea
+              name="description"
+              placeholder="Description"
+              className="resize-y"
+            />
+          </div>
           <Input
             type="number"
             name="price"

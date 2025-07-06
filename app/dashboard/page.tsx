@@ -29,6 +29,7 @@ async function createItem(userId: string, formData: FormData) {
     await prisma.item.create({
         data: {
             title: formData.get('title') as string,
+            description: formData.get('description') as string,
             url: formData.get('url') as string,
             price: parseFloat(formData.get('price') as string),
             icon: formData.get('icon') as string,
@@ -47,6 +48,7 @@ async function updateItem(itemId: string, formData: FormData) {
         },
         data: {
             title: formData.get('title') as string,
+            description: formData.get('description') as string,
             url: formData.get('url') as string,
             price: parseFloat(formData.get('price') as string),
             icon: formData.get('icon') as string,
